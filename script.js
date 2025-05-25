@@ -98,10 +98,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Parse each line into cards and tags
         const rows = [];
         let maxTags = 0;
-        
-        for (const line of lines) {
+          for (const line of lines) {
             const parts = line.split(' #');
-            const card = parts[0].trim();
+            let card = parts[0].trim();
+            
+            // Strip set tags and numbers from card name
+            // Pattern: removes (SET) followed by optional space and number at the end
+            // Examples: "1 Bounty Board (OTC) 37" -> "1 Bounty Board"
+            //           "2 Lightning Bolt (M11)" -> "2 Lightning Bolt"
+            card = card.replace(/\s*\([A-Z0-9]+\)\s*\d*\s*$/, '');
+            
             const tags = parts.slice(1).map(tag => tag.trim());
             
             rows.push({ card, tags });
