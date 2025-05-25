@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moxfield Tag Sorter</title>
+    
+    <!-- SEO and Social Media Meta Tags -->
+    <meta name="description" content="Sort and organize your Moxfield deck lists by tags. Copy deck lists from Moxfield's Bulk Edit menu, view card previews, and export to CSV format.">
+    <meta name="keywords" content="moxfield, mtg, magic the gathering, deck, tags, sorter, csv, card preview, bulk edit">
+    <meta name="author" content="Moxfield Tag Sorter">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/0swin/Moxfield-Tag-Sorter">
+    <meta property="og:title" content="Moxfield Tag Sorter">
+    <meta property="og:description" content="Sort and organize your Moxfield deck lists by tags. Copy deck lists from Moxfield's Bulk Edit menu, view card previews, and export to CSV format.">
+    <meta property="og:site_name" content="Moxfield Tag Sorter">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:url" content="https://github.com/0swin/Moxfield-Tag-Sorter">
+    <meta property="twitter:title" content="Moxfield Tag Sorter">
+    <meta property="twitter:description" content="Sort and organize your Moxfield deck lists by tags. Copy deck lists from Moxfield's Bulk Edit menu, view card previews, and export to CSV format.">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#c6a0f6">
+    <meta name="msapplication-TileColor" content="#c6a0f6">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -89,10 +111,21 @@
                 </svg>
             </a>        </div>
         
-        <p class="text-macchiato-subtext0 mb-2">Paste your Moxfield deck list with tags below:</p>
-        <textarea id="input" class="w-full h-48 p-3 mb-3 bg-macchiato-surface0 text-macchiato-text border border-macchiato-overlay0 rounded font-mono focus:outline-none focus:ring-2 focus:ring-macchiato-mauve" placeholder="Example:
-Card Name #tag1 #tag2
-Another Card #tag1 #tag3 #tag4"></textarea>
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-macchiato-text mb-2">How to use:</h2>
+            <ol class="text-macchiato-subtext0 text-sm space-y-1 ml-4 list-decimal">
+                <li>Go to your Moxfield deck page</li>
+                <li>Click on "Bulk Edit" in the deck editor</li>
+                <li>Copy the entire deck list (includes set codes and tags)</li>
+                <li>Paste the deck list in the text area below</li>
+                <li>View your sorted deck by tags in table or CSV format</li>
+            </ol>
+        </div>
+        
+        <p class="text-macchiato-subtext0 mb-2">Paste your Moxfield deck list from "Bulk Edit":</p>        <textarea id="input" class="w-full h-48 p-3 mb-3 bg-macchiato-surface0 text-macchiato-text border border-macchiato-overlay0 rounded font-mono focus:outline-none focus:ring-2 focus:ring-macchiato-mauve" placeholder="Example from Moxfield Bulk Edit:
+1 Lightning Bolt (M11) 149 #removal #burn
+1 Counterspell (MH2) 267 #control #counter
+4 Brainstorm (EMA) 40 #draw #cantrip #instant"></textarea>
         <div id="status-message" class="text-macchiato-overlay1 italic min-h-[20px] mb-3"></div>
         
         <div>
