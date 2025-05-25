@@ -1,35 +1,63 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const convertBtn = document.getElementById('convert-btn');
     const copyBtn = document.getElementById('copy-btn');
     const tableViewBtn = document.getElementById('table-view-btn');
     const csvViewBtn = document.getElementById('csv-view-btn');
     const inputArea = document.getElementById('input');
     const outputArea = document.getElementById('output');
     const tableOutput = document.getElementById('table-output');
+    const statusMessage = document.getElementById('status-message');
 
     let parsedData = null;
-
-    convertBtn.addEventListener('click', function() {
-        const inputText = inputArea.value.trim();
-        if (!inputText) {
-            outputArea.textContent = 'Please enter some data to convert.';
-            tableOutput.innerHTML = 'Please enter some data to convert.';
-            return;
+    let debounceTimeout = null;
+    
+    // Function to process input with debounce
+    function processInputWithDebounce() {
+        // Clear any existing timeout
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
         }
-
-        // Process the input
-        parsedData = parseInput(inputText);
-        const csvData = generateCsvContent(parsedData);
         
-        // Update both views
-        outputArea.textContent = csvData;
-        createTable(parsedData);
+        // Show processing status
+        statusMessage.textContent = 'Processing...';
         
-        // Default to table view
-        tableOutput.style.display = 'block';
-        outputArea.style.display = 'none';
-        setActiveTab(tableViewBtn);
-    });    copyBtn.addEventListener('click', function() {
+        // Set a timeout to process input after a delay
+        debounceTimeout = setTimeout(() => {
+            const inputText = inputArea.value.trim();
+            
+            if (!inputText) {
+                outputArea.textContent = 'Please enter some data to convert.';
+                tableOutput.innerHTML = 'Please enter some data to convert.';
+                statusMessage.textContent = '';
+                return;
+            }
+            
+            try {
+                // Process the input
+                parsedData = parseInput(inputText);
+                const csvData = generateCsvContent(parsedData);
+                
+                // Update both views
+                outputArea.textContent = csvData;
+                createTable(parsedData);
+                
+                // Default to table view
+                tableOutput.style.display = 'block';
+                outputArea.style.display = 'none';
+                setActiveTab(tableViewBtn);
+                
+                // Clear status message
+                statusMessage.textContent = 'Conversion complete!';
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 2000);
+            } catch (error) {
+                statusMessage.textContent = 'Error: ' + error.message;
+            }
+        }, 500); // 500ms delay for debounce
+    }
+    
+    // Add input event listener for real-time conversion
+    inputArea.addEventListener('input', processInputWithDebounce);copyBtn.addEventListener('click', function() {
         navigator.clipboard.writeText(outputArea.textContent)
             .then(() => {
                 const originalText = copyBtn.textContent;
@@ -82,12 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Sort by number of tags (descending)
-        rows.sort((a, b) => b.tags.length - a.tags.length);
-        
-        // Create header row
-        const headerRow = ['Card'];
+        rows.sort((a, b) => b.tags.length - a.tags.length);        // Create header row
+        const headerRow = ['#', 'Card Name'];
         for (let i = 0; i < maxTags; i++) {
-            headerRow.push(`Tag${i + 1}`);
+            headerRow.push(`Tag ${i + 1}`);
         }
         
         return { rows, headerRow, maxTags };
@@ -101,15 +127,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create CSV content
         let csvContent = headerRow.join(',') + '\n';
-        
-        // Add data rows
-        for (const row of rows) {
-            const { card, tags } = row;
+          // Add data rows
+        for (let i = 0; i < rows.length; i++) {
+            const { card, tags } = rows[i];
             // Escape commas in card names by wrapping in quotes
             const escapedCard = card.includes(',') ? `"${card}"` : card;
             
-            // Create a row with the card and its tags, padding with empty entries if needed
-            const csvRow = [escapedCard, ...tags];
+            // Create a row with the line number, card name, and its tags, padding with empty entries if needed
+            const csvRow = [(i + 1).toString(), escapedCard, ...tags];
             while (csvRow.length < headerRow.length) {
                 csvRow.push('');
             }
@@ -127,8 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return csvContent;
     }
-    
-    // Create HTML table from parsed data
+      // Create HTML table from parsed data
     function createTable(data) {
         if (!data) return;
         
@@ -140,10 +164,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create table header
         const thead = document.createElement('thead');
         const headerTr = document.createElement('tr');
-        
-        headerRow.forEach(headerText => {
+          // Add all headers
+        headerRow.forEach((headerText, index) => {
             const th = document.createElement('th');
             th.textContent = headerText;
+            if (index === 0) { // First column (line number)
+                th.style.width = '40px'; // Set a fixed width for the line number column
+            }
             headerTr.appendChild(th);
         });
         
@@ -153,16 +180,24 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create table body
         const tbody = document.createElement('tbody');
         
-        rows.forEach(row => {
+        // Add rows with line numbers
+        rows.forEach((row, index) => {
             const tr = document.createElement('tr');
             
-            // Add card name cell
+            // Add line number cell
+            const tdLineNumber = document.createElement('td');
+            tdLineNumber.textContent = index + 1; // Line numbers start at 1
+            tdLineNumber.style.textAlign = 'center';
+            tdLineNumber.style.color = '#666';
+            tdLineNumber.style.backgroundColor = '#f0f0f0';
+            tr.appendChild(tdLineNumber);
+              // Add card name cell
             const tdCard = document.createElement('td');
             tdCard.textContent = row.card;
             tr.appendChild(tdCard);
             
             // Add tag cells
-            for (let i = 0; i < headerRow.length - 1; i++) {
+            for (let i = 0; i < headerRow.length - 2; i++) {
                 const td = document.createElement('td');
                 td.textContent = row.tags[i] || '';
                 tr.appendChild(td);
