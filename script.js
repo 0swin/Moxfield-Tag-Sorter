@@ -208,12 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const tdCard = document.createElement('td');
             tdCard.textContent = row.card;
             tdCard.classList.add('py-2', 'px-4', 'border-b', 'border-macchiato-overlay0', 'cursor-pointer', 'hover:text-macchiato-blue', 'transition-colors');
-            
-            // Add hover events for card preview
+              // Add hover events for card preview
             tdCard.addEventListener('mouseenter', () => {
                 showCardPreview(row.card, row.setCode, row.collectorNumber, tdCard);
             });
             tdCard.addEventListener('mouseleave', hideCardPreview);
+            
+            // Add click event to open Scryfall page
+            tdCard.addEventListener('click', () => {
+                openScryfallPage(row.card, row.setCode, row.collectorNumber);
+            });
             
             tr.appendChild(tdCard);
             
@@ -355,8 +359,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (y < 15) {
             y = 15;
         }
-        
-        preview.style.left = `${x}px`;
+          preview.style.left = `${x}px`;
         preview.style.top = `${y}px`;
+    }
+
+    function openScryfallPage(cardName, setCode, collectorNumber) {
+        let scryfallUrl;
+        
+        if (setCode && collectorNumber) {
+            // Use specific set and collector number URL format
+            // Example: https://scryfall.com/card/dft/268/wastewood-verge
+            const cardSlug = cardName.replace(/^\d+\s+/, '') // Remove quantity
+                                    .toLowerCase()
+                                    .replace(/[^a-z0-9\s]/g, '') // Remove special characters
+                                    .replace(/\s+/g, '-'); // Replace spaces with hyphens
+            scryfallUrl = `https://scryfall.com/card/${setCode.toLowerCase()}/${collectorNumber}/${cardSlug}`;
+        } else {
+            // Fallback to search URL
+            const cleanCardName = cardName.replace(/^\d+\s+/, '').trim();
+            scryfallUrl = `https://scryfall.com/search?q=${encodeURIComponent(cleanCardName)}`;
+        }
+        
+        // Open in new tab
+        window.open(scryfallUrl, '_blank');
     }
 });
