@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moxfield Tag Sorter</title>    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            overflow-x: auto;
+            display: none;
+        }
+        #table-output {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+        h1 {
+            color: #333;
+        }
+        .view-controls {
+            margin: 15px 0;
+        }
+        .copy-btn {
+            background-color: #2196F3;
+        }
+        .copy-btn:hover {
+            background-color: #0b7dda;
+        }
+        .tab-btn {
+            background-color: #607D8B;
+        }
+        .tab-btn.active {
+            background-color: #455A64;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Moxfield Tag Sorter</h1>
+    <p>Paste your Moxfield deck list with tags below, then click "Convert to CSV":</p>
+    <textarea id="input" placeholder="Example:
+Card Name #tag1 #tag2
+Another Card #tag1 #tag3 #tag4"></textarea>
+    <div>
+        <button id="convert-btn">Convert to CSV</button>
+    </div>    <div>
+        <h3>Output:</h3>
+        <div class="view-controls">
+            <button id="table-view-btn" class="tab-btn active">Table View</button>
+            <button id="csv-view-btn" class="tab-btn">CSV View</button>
+        </div>
+        <div id="table-output"></div>
+        <div id="output"></div>
+        <div>
+            <button id="copy-btn" class="copy-btn">Copy CSV</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
