@@ -16,17 +16,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (debounceTimeout) {
             clearTimeout(debounceTimeout);
         }
-        
-        // Show processing status
+          // Show processing status
         statusMessage.textContent = 'Processing...';
+        statusMessage.className = 'text-macchiato-overlay1 italic min-h-[20px] mb-3';
         
         // Set a timeout to process input after a delay
         debounceTimeout = setTimeout(() => {
             const inputText = inputArea.value.trim();
-            
-            if (!inputText) {
+              if (!inputText) {
                 outputArea.textContent = 'Please enter some data to convert.';
-                tableOutput.innerHTML = 'Please enter some data to convert.';
+                tableOutput.innerHTML = '<p class="p-4 text-macchiato-overlay1 italic text-center">Please enter some data to convert.</p>';
                 statusMessage.textContent = '';
                 return;
             }
@@ -44,14 +43,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 tableOutput.style.display = 'block';
                 outputArea.style.display = 'none';
                 setActiveTab(tableViewBtn);
-                
-                // Clear status message
+                  // Clear status message
                 statusMessage.textContent = 'Conversion complete!';
+                statusMessage.className = 'text-macchiato-green italic min-h-[20px] mb-3';
                 setTimeout(() => {
                     statusMessage.textContent = '';
-                }, 2000);
-            } catch (error) {
+                    statusMessage.className = 'text-macchiato-overlay1 italic min-h-[20px] mb-3';
+                }, 2000);            } catch (error) {
                 statusMessage.textContent = 'Error: ' + error.message;
+                statusMessage.className = 'text-macchiato-red italic min-h-[20px] mb-3';
             }
         }, 500); // 500ms delay for debounce
     }
@@ -83,15 +83,14 @@ document.addEventListener('DOMContentLoaded', function() {
         outputArea.style.display = 'block';
         setActiveTab(csvViewBtn);
     });
-    
-    function setActiveTab(activeButton) {
+      function setActiveTab(activeButton) {
         // Remove active class from all buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
+        document.querySelectorAll('.btn-tab').forEach(btn => {
             btn.classList.remove('active');
         });
         // Add active class to clicked button
         activeButton.classList.add('active');
-    }    // Parse input text and return structured data
+    }// Parse input text and return structured data
     function parseInput(text) {
         // Split input into lines
         const lines = text.split('\n').filter(line => line.trim());
@@ -151,8 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         return csvContent;
-    }
-      // Create HTML table from parsed data
+    }    // Create HTML table from parsed data
     function createTable(data) {
         if (!data) return;
         
@@ -160,14 +158,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create table element
         const table = document.createElement('table');
-        
-        // Create table header
+        table.classList.add('w-full', 'border-collapse');
+          // Create table header
         const thead = document.createElement('thead');
         const headerTr = document.createElement('tr');
           // Add all headers
         headerRow.forEach((headerText, index) => {
             const th = document.createElement('th');
             th.textContent = headerText;
+            th.classList.add('bg-macchiato-surface1', 'text-macchiato-text', 'py-2', 'px-4', 'text-left', 'sticky', 'top-0');
             if (index === 0) { // First column (line number)
                 th.style.width = '40px'; // Set a fixed width for the line number column
             }
@@ -179,27 +178,29 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create table body
         const tbody = document.createElement('tbody');
-        
-        // Add rows with line numbers
+          // Add rows with line numbers
         rows.forEach((row, index) => {
             const tr = document.createElement('tr');
-            
-            // Add line number cell
+            if (index % 2 === 1) {
+                tr.classList.add('bg-macchiato-surface0/50');
+            }
+            tr.classList.add('hover:bg-macchiato-surface0');
+              // Add line number cell
             const tdLineNumber = document.createElement('td');
             tdLineNumber.textContent = index + 1; // Line numbers start at 1
-            tdLineNumber.style.textAlign = 'center';
-            tdLineNumber.style.color = '#666';
-            tdLineNumber.style.backgroundColor = '#f0f0f0';
-            tr.appendChild(tdLineNumber);
-              // Add card name cell
+            tdLineNumber.classList.add('text-center', 'text-macchiato-overlay1', 'bg-macchiato-surface1', 'font-mono');
+            tdLineNumber.style.width = '40px';
+            tr.appendChild(tdLineNumber);            // Add card name cell
             const tdCard = document.createElement('td');
             tdCard.textContent = row.card;
+            tdCard.classList.add('py-2', 'px-4', 'border-b', 'border-macchiato-overlay0');
             tr.appendChild(tdCard);
             
             // Add tag cells
             for (let i = 0; i < headerRow.length - 2; i++) {
                 const td = document.createElement('td');
                 td.textContent = row.tags[i] || '';
+                td.classList.add('py-2', 'px-4', 'border-b', 'border-macchiato-overlay0');
                 tr.appendChild(td);
             }
             
